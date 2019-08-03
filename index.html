@@ -1,0 +1,62 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <div class="container container-fluid col-md-6 col-sm-12">
+      <div class="form-group mt-5">
+        <label>Username:</label>
+        <input
+          id="name"
+          class="form-control"
+          type="text"
+          name="username"
+          placeholder="Enter username"
+        />
+      </div>
+      <div class="form-group">
+        <label>Password:</label>
+        <input id="pass" class="form-control" type="password" name="password" />
+      </div>
+      <button type="submit" class="btn btn-primary" id="submit">Login</button>
+    </div>
+  </body>
+  <script
+    src="https://code.jquery.com/jquery-3.4.1.js"
+    integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+    crossorigin="anonymous"
+  ></script>
+  <script>
+    $("#submit").on("click", e => {
+      e.preventDefault();
+
+      let name = $("#name").val();
+      let pass = $("#pass").val();
+      console.log("name, pass", name, pass);
+      $.post(
+        {
+          url: "http://localhost:4000/login",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          data: JSON.stringify({ name: "admin", password: "admin" }),
+          processData: false
+        },
+        (data, status) => {
+          if (data.message == "ok") {
+            localStorage.setItem("token", data.token);
+            window.location.replace("/convert.html");
+          } else {
+            alert("wrong pass");
+          }
+        }
+      );
+    });
+  </script>
+</html>

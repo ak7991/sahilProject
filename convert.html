@@ -1,0 +1,74 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <button class="btn btn-danger mt-3 ml-3" id="logout">Log Out</button>
+    <div class="container container-fluid col-md-6 col-sm-12">
+      <div class="mt-5">
+        <div class="container mt-5">
+          <h5 class="mb-3">Select file to upload:</h5>
+          <div class="form-group">
+            <input
+              type="file"
+              class="form-control-file"
+              name="file"
+              id="fileToUpload"
+            />
+          </div>
+          <div class="text-center mt-5">
+            <button class="btn btn-default" id="convert">Convert</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+
+  <script
+    src="https://code.jquery.com/jquery-3.4.1.js"
+    integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+    crossorigin="anonymous"
+  ></script>
+  <script>
+    $(document).ready(() => {
+      if (!localStorage.getItem("token")) {
+        alert("please login first");
+        window.location.replace("/");
+      }
+      $("#logout").on("click", e => {
+        e.preventDefault();
+        localStorage.clear();
+        $.get("http://localhost:4000/logout", (data, status) => {
+          window.location.replace("/");
+        });
+      });
+      $("#convert").on("click", e => {
+        formdata = new FormData();
+        if ($("#fileToUpload").prop("files").length > 0) {
+          file = $("#fileToUpload").prop("files")[0];
+          formdata.append("file", file);
+        }
+        let token = localStorage.getItem("token");
+
+        $.post({
+          url: "http://localhost:4000/convert",
+          data: formdata,
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+          processData: false,
+          contentType: false,
+          success: function(result) {
+            console.log("result.resultss", result.results);
+          }
+        });
+      });
+    });
+  </script>
+</html>
